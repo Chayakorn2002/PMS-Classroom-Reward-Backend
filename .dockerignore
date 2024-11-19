@@ -1,0 +1,17 @@
+config/config.yaml
+doc/
+docs/
+tmp/
+.dockerignore
+.env
+# .git
+# .gitignore
+.vscode
+bin
+docker-compose
+LICENSE
+README.md
+go.work.sum
+k8s/
+scripts/
+main
