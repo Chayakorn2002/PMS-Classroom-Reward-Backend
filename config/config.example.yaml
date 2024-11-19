@@ -1,0 +1,7 @@
+env: "local"
+
+sqlite:
+  path: "./pms-classroom.db"
+
+restServer:
+  port: 8080

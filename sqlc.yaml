@@ -1,0 +1,18 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: ["./internal/infrastructure/sqlc/*"]
+    schema: ["./internal/infrastructure/sqlc/*"]
+    gen:
+      go:
+        package: "sqlc"
+        out: "./internal/infrastructure/sqlc/gen"
+        emit_json_tags: true
+        overrides:
+          - db_type: "uuid"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
+          - db_type: "uuid"
+            go_type: "github.com/google/uuid.NullUUID"
+            nullable: true
