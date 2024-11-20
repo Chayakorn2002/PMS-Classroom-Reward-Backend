@@ -29,6 +29,16 @@ func registerRoute(service services.Service) http.Handler {
 				}, nil
 			})))
 
+	r.Post("/api/v1/health-check-2",
+		transport.NewTransport(
+			&dto.HealthCheckRequest{},
+			transport.NewEndpoint(func(ctx context.Context, in *dto.HealthCheckRequest) (*dto.HealthCheckResponse, error) {
+				return &dto.HealthCheckResponse{
+					Status:  1000,
+					Message: "OK 2",
+				}, nil
+			})))
+
 	// api
 	{
 		// v1
