@@ -2,12 +2,27 @@ package transport
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/Chayakorn2002/pms-classroom-backend/domain/dto"
 	"github.com/Chayakorn2002/pms-classroom-backend/domain/exceptions"
 )
+
+var (
+	logFile *os.File
+	logger  *log.Logger
+)
+
+func init() {
+	var err error
+	logFile, err = os.OpenFile("log/error.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+	logger = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+}
 
 func ErrorHandler(r *http.Request, w http.ResponseWriter, err error) {
 	// fmt.Println("r.Context() in error handler", r.Context())
@@ -22,7 +37,9 @@ func ErrorHandler(r *http.Request, w http.ResponseWriter, err error) {
 	switch {
 	// Error is an ExceptionError
 	case errors.As(err, &cErr):
-		fmt.Println("cErr.DebugMessage", cErr.DebugMessage)
+		// write the debug message to log file
+		logger.Printf("Debug message: %s, Error: %v", cErr.DebugMessage, err)
+
 		httpCode = cErr.HttpStatusCode
 
 		resp := &dto.CommonErrorResponse{
