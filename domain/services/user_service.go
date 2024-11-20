@@ -47,7 +47,8 @@ func (s *userService) RegisterStudent(ctx context.Context, in *dto.RegisterStude
 		return nil, s.errors.ErrBadRequest.WithDebugMessage(err.Message)
 	}
 
-	student, err := s.userRepo.CheckUserExistsByEmail(ctx, in.Email)
+	email := strings.ToLower(in.Email)
+	student, err := s.userRepo.CheckUserExistsByEmail(ctx, email)
 	if err != nil && !strings.Contains(err.Error(), "no rows in result set") {
 		return nil, s.errors.ErrInternal.WithDebugMessage(err.Error())
 	} else if student != nil {
@@ -65,7 +66,7 @@ func (s *userService) RegisterStudent(ctx context.Context, in *dto.RegisterStude
 		lastname  string
 	)
 	for _, student := range students.Students {
-		if strings.EqualFold(student.Profile.EmailAddress, in.Email) {
+		if strings.EqualFold(student.Profile.EmailAddress, email) {
 			userID = student.UserId
 			firstname = student.Profile.Name.GivenName
 			lastname = student.Profile.Name.FamilyName
@@ -90,7 +91,7 @@ func (s *userService) RegisterStudent(ctx context.Context, in *dto.RegisterStude
 		ID:                       uuid.String(),
 		Firstname:                firstname,
 		Lastname:                 lastname,
-		Email:                    in.Email,
+		Email:                    email,
 		Password:                 password,
 		CourseID:                 in.CourseID,
 		GoogleClassroomStudentID: userID,
@@ -109,7 +110,8 @@ func (s *userService) LoginStudent(ctx context.Context, in *dto.LoginStudentRequ
 		return nil, s.errors.ErrBadRequest.WithDebugMessage(err.Message)
 	}
 
-	user, err := s.userRepo.GetUserByEmail(ctx, in.Email)
+	email := strings.ToLower(in.Email)
+	user, err := s.userRepo.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, s.errors.ErrInternal.WithDebugMessage(err.Error())
 	} else if user == nil {
@@ -131,7 +133,8 @@ func (s *userService) GetUserProfileByEmail(ctx context.Context, in *dto.GetUser
 		return nil, s.errors.ErrBadRequest.WithDebugMessage(err.Message)
 	}
 
-	user, err := s.userRepo.GetUserProfileByEmail(ctx, in.Email)
+	email := strings.ToLower(in.Email)
+	user, err := s.userRepo.GetUserProfileByEmail(ctx, email)
 	if err != nil {
 		return nil, s.errors.ErrInternal.WithDebugMessage(err.Error())
 	}
