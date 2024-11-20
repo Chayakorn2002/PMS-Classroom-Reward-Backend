@@ -34,7 +34,7 @@ func GetGoogleClassroomClient(ctx context.Context) (*classroom.Service, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create google config from json: %v", err)
 	}
-	googleCredentialConfig.RedirectURL = "http://localhost:8080/oauth2callback"
+	googleCredentialConfig.RedirectURL = "http://localhost:8080/api/v1/oauth2callback"
 
 	client, err := getClient(ctx, googleCredentialConfig)
 	if err != nil {
