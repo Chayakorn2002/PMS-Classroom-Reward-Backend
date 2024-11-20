@@ -7,5 +7,6 @@ type RedeemRewardRequest struct {
 }
 
 type RedeemRewardResponse struct {
-	Status int `json:"status"`
+	Status int    `json:"status"`
+	Serial string `json:"serial"`
 }

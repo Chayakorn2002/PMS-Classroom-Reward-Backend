@@ -9,6 +9,7 @@ import (
 	"github.com/Chayakorn2002/pms-classroom-backend/domain/exceptions"
 	"github.com/Chayakorn2002/pms-classroom-backend/internal/adapters/repositories/sqlite"
 	sqlc "github.com/Chayakorn2002/pms-classroom-backend/internal/infrastructure/sqlc/gen"
+	"github.com/Chayakorn2002/pms-classroom-backend/utils/gen"
 	"github.com/Chayakorn2002/pms-classroom-backend/utils/validation"
 	"github.com/google/uuid"
 	"google.golang.org/api/classroom/v1"
@@ -37,6 +38,7 @@ func NewRedeemService(
 }
 
 func (s *redeemService) RedeemReward(ctx context.Context, in *dto.RedeemRewardRequest) (*dto.RedeemRewardResponse, error) {
+	fmt.Println("in", in)
 	if err := validation.ValidateStruct(in); err != nil {
 		return nil, s.errors.ErrBadRequest.WithDebugMessage(err.Message)
 	}
@@ -87,7 +89,8 @@ func (s *redeemService) RedeemReward(ctx context.Context, in *dto.RedeemRewardRe
 	}
 
 	// Check if the student has passed the assignment
-	if latestSubmission.AssignedGrade != assignment.MaxPoints {
+	// 80% of the max points
+	if latestSubmission.AssignedGrade < assignment.MaxPoints*0.8 {
 		return nil, s.errors.ErrBadRequest.WithDebugMessage(fmt.Sprintf("The student has not passed the assignment. Assigned grade: %f", latestSubmission.AssignedGrade))
 	}
 
@@ -96,9 +99,13 @@ func (s *redeemService) RedeemReward(ctx context.Context, in *dto.RedeemRewardRe
 		return nil, s.errors.ErrInternal.WithDebugMessage(err.Error())
 	}
 
+	// Generate Serial Number for the reward in 10 alphanumeric characters
+	serial := gen.GenerateSerial(10)
+
 	// Redeem the assignment
 	err = s.redeemLogRepo.CreateRedeemLog(ctx, &sqlc.CreateRedeemLogParams{
 		ID:                       uuid.String(),
+		Serial:                   serial,
 		CourseID:                 in.CourseID,
 		GoogleClassroomStudentID: in.StudentID,
 		AssignmentID:             in.AssignmentID,
@@ -109,5 +116,6 @@ func (s *redeemService) RedeemReward(ctx context.Context, in *dto.RedeemRewardRe
 
 	return &dto.RedeemRewardResponse{
 		Status: 1000,
+		Serial: serial,
 	}, nil
 }

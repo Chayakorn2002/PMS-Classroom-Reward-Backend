@@ -11,6 +11,7 @@ import (
 
 type RedeemLog struct {
 	ID                       string    `json:"id"`
+	Serial                   string    `json:"serial"`
 	CourseID                 string    `json:"course_id"`
 	GoogleClassroomStudentID string    `json:"google_classroom_student_id"`
 	AssignmentID             string    `json:"assignment_id"`

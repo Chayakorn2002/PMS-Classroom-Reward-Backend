@@ -12,6 +12,7 @@ var createRedeemLogsTable = &Migration{
 		_, err := db.Exec(`
 			CREATE TABLE redeem_log (
 				id TEXT PRIMARY KEY,
+				serial TEXT NOT NULL,
 				course_id TEXT NOT NULL,
 				google_classroom_student_id TEXT NOT NULL,
 				assignment_id TEXT NOT NULL,

@@ -1,5 +1,6 @@
 CREATE TABLE redeem_log (
     id TEXT PRIMARY KEY,
+    serial TEXT NOT NULL,
     course_id TEXT NOT NULL,
     google_classroom_student_id TEXT NOT NULL,
     assignment_id TEXT NOT NULL,
@@ -12,6 +13,7 @@ CREATE TABLE redeem_log (
 -- name: GetRedeemLogsByStudentId :many
 SELECT 
     id,
+    serial,
     course_id,
     google_classroom_student_id,
     assignment_id
@@ -21,6 +23,7 @@ WHERE google_classroom_student_id = @google_classroom_student_id;
 -- name: CreateRedeemLog :exec
 INSERT INTO redeem_log (
     id,
+    serial,
     course_id,
     google_classroom_student_id,
     assignment_id,
@@ -28,6 +31,7 @@ INSERT INTO redeem_log (
     created_by
 ) VALUES (
     @id,
+    @serial,
     @course_id,
     @google_classroom_student_id,
     @assignment_id,

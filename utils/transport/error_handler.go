@@ -22,7 +22,7 @@ func ErrorHandler(r *http.Request, w http.ResponseWriter, err error) {
 	switch {
 	// Error is an ExceptionError
 	case errors.As(err, &cErr):
-		fmt.Println(cErr.DebugMessage)
+		fmt.Println("cErr.DebugMessage", cErr.DebugMessage)
 		httpCode = cErr.HttpStatusCode
 
 		resp := &dto.CommonErrorResponse{
