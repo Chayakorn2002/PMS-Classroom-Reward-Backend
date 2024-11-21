@@ -2,6 +2,7 @@ package transport
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -38,6 +39,7 @@ func ErrorHandler(r *http.Request, w http.ResponseWriter, err error) {
 	// Error is an ExceptionError
 	case errors.As(err, &cErr):
 		// write the debug message to log file
+		fmt.Println("Debug message: ", cErr.DebugMessage)
 		logger.Printf("Debug message: %s, Error: %v", cErr.DebugMessage, err)
 
 		httpCode = cErr.HttpStatusCode
